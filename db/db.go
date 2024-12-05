@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 	"time"
 
@@ -13,8 +14,12 @@ var DB *sql.DB
 func InitDB() {
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
 	database := os.Getenv("DB_NAME")
-	dataSource := user + ":" + password + "@tcp(localhost:3306)/" + database
+	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
+
+	fmt.Println(dataSource)
 
 	var err error
 	DB, err = sql.Open("mysql", dataSource)
