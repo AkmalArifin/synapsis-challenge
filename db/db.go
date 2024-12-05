@@ -16,7 +16,8 @@ func InitDB() {
 	database := os.Getenv("DB_NAME")
 	dataSource := user + ":" + password + "@tcp(localhost:3306)/" + database
 
-	DB, err := sql.Open("mysql", dataSource)
+	var err error
+	DB, err = sql.Open("mysql", dataSource)
 	if err != nil {
 		panic(err)
 	}

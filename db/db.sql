@@ -12,6 +12,7 @@ CREATE TABLE `products` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT null,
   `description` varchar(255) DEFAULT null,
+  `price` int DEFAULT null,
   `category_id` int DEFAULT null,
   `created_at` datetime DEFAULT null,
   `deleted_at` datetime DEFAULT null
@@ -44,7 +45,7 @@ CREATE TABLE `cart_item` (
 CREATE TABLE `orders` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `user_id` int DEFAULT null,
-  `payment_id` int DEFAULT null,
+  `amount` int DEFAULT null,
   `created_at` datetime DEFAULT null,
   `deleted_at` datetime DEFAULT null
 );
@@ -60,6 +61,7 @@ CREATE TABLE `order_item` (
 
 CREATE TABLE `payments` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `order_id` int DEFAULT null,
   `amount` int DEFAULT null,
   `provider` varchar(255) DEFAULT null,
   `status` varchar(255) DEFAULT null,
@@ -83,8 +85,6 @@ CREATE INDEX `deleted_at` ON `cart_item` (`deleted_at`);
 
 CREATE INDEX `idx_user_id` ON `orders` (`user_id`);
 
-CREATE INDEX `idx_payment_id` ON `orders` (`payment_id`);
-
 CREATE INDEX `idx_order_id` ON `order_item` (`order_id`);
 
 CREATE INDEX `idx_product_id` ON `order_item` (`product_id`);
@@ -99,6 +99,8 @@ ALTER TABLE `cart_item` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`i
 
 ALTER TABLE `order_item` ADD FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
 
+ALTER TABLE `order_item` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
+
 ALTER TABLE `orders` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
-ALTER TABLE `orders` ADD FOREIGN KEY (`payment_id`) REFERENCES `payments` (`id`);
+ALTER TABLE `payments` ADD FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
