@@ -1,0 +1,9 @@
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+    "order_id": 4,
+    "amount": 2350,
+    "provider": "Cash",
+    "Status": "Success"
+}
