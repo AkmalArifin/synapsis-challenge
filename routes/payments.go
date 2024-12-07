@@ -7,6 +7,16 @@ import (
 	"github.com/synapsis-challenge/models"
 )
 
+func getPayments(c *gin.Context) {
+	payments, err := models.GetAllPayments()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch data"})
+		return
+	}
+
+	c.JSON(http.StatusOK, payments)
+}
+
 func checkoutPayment(c *gin.Context) {
 	var payment models.Payment
 	err := c.ShouldBindJSON(&payment)

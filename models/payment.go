@@ -17,6 +17,31 @@ type Payment struct {
 	DeletedAt NullTime    `json:"deleted_at"`
 }
 
+func GetAllPayments() ([]Payment, error) {
+	query := `
+	SELECT id, order_id, amount, provider, status, created_at, deleted_at
+	FROM payments
+	WHERE deleted_at IS NULL
+	`
+	rows, err := db.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var payments []Payment
+	for rows.Next() {
+		var payment Payment
+		err = rows.Scan(&payment.ID, &payment.OrderID, &payment.Amount, &payment.Provider, &payment.Status, &payment.CreatedAt, &payment.DeletedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		payments = append(payments, payment)
+	}
+
+	return payments, nil
+}
+
 func (p *Payment) Save() error {
 	query := `
 	INSERT INTO payments(order_id, amount, provider, status, created_at)

@@ -7,6 +7,16 @@ import (
 	"github.com/synapsis-challenge/models"
 )
 
+func getUsers(c *gin.Context) {
+	users, err := models.GetAllUsers()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch data"})
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
+}
+
 func login(c *gin.Context) {
 	var user models.User
 	err := c.ShouldBindJSON(&user)

@@ -19,11 +19,37 @@ type User struct {
 	DeletedAt NullTime    `json:"deleted_at"`
 }
 
+func GetAllUsers() ([]User, error) {
+	query := `
+	SELECT id, name, username, email, password, created_at, deleted_at
+	FROM users
+	WHERE deleted_at IS NULL
+	`
+
+	rows, err := db.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var users []User
+	for rows.Next() {
+		var user User
+		err := rows.Scan(&user.ID, &user.Name, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.DeletedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
 func GetUserByEmail(email string) (User, error) {
 	query := `
 	SELECT id, name, username, email, password, created_at, deleted_at
 	FROM users
-	WHERE email = ?
+	WHERE email = ? AND deleted_at IS NULL
 	`
 
 	var user User

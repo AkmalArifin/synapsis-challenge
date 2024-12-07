@@ -23,6 +23,28 @@ type CartItem struct {
 	DeletedAt NullTime   `json:"deleted_at"`
 }
 
+func GetAllCarts() ([]Cart, error) {
+	query := `SELECT id, user_id, created_at, deleted_at FROM carts WHERE deleted_at IS NULL`
+
+	rows, err := db.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var carts []Cart
+	for rows.Next() {
+		var cart Cart
+		err := rows.Scan(&cart.ID, &cart.UserID, &cart.CreatedAt, &cart.DeletedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		carts = append(carts, cart)
+	}
+
+	return carts, nil
+}
+
 func CreateCartByUser(userID int64) (Cart, error) {
 	var cart Cart
 	cart.UserID.SetValid(userID)

@@ -15,6 +15,31 @@ type Product struct {
 	DeletedAt   NullTime    `json:"deleted_at"`
 }
 
+func GetAllProducts() ([]Product, error) {
+	query := `
+	SELECT id, name, description, price, category_id, created_at, deleted_at
+	FROM products
+	WHERE deleted_at IS NULL
+	`
+	rows, err := db.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var products []Product
+	for rows.Next() {
+		var product Product
+		err = rows.Scan(&product.ID, &product.Name, &product.Description, &product.Price, &product.CategoryID, &product.CreatedAt, &product.DeletedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		products = append(products, product)
+	}
+
+	return products, nil
+}
+
 func GetProductByID(productID int64) (Product, error) {
 	query := `
 	SELECT id, name, description, price, category_id, created_at, deleted_at

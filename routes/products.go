@@ -8,6 +8,16 @@ import (
 	"github.com/synapsis-challenge/models"
 )
 
+func getProducts(c *gin.Context) {
+	products, err := models.GetAllProducts()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch data"})
+		return
+	}
+
+	c.JSON(http.StatusOK, products)
+}
+
 func getProductsByCategory(c *gin.Context) {
 	categoryID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {

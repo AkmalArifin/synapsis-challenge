@@ -25,6 +25,56 @@ type OrderItem struct {
 	DeletedAt NullTime   `json:"deleted_at"`
 }
 
+func GetAllOrders() ([]Order, error) {
+	query := `
+	SELECT id, user_id, amount, created_at, deleted_at
+	FROM orders
+	WHERE deleted_at IS NULL
+	`
+	rows, err := db.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var orders []Order
+	for rows.Next() {
+		var order Order
+		err = rows.Scan(&order.ID, &order.UserID, &order.Amount, &order.CreatedAt, &order.DeletedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		orders = append(orders, order)
+	}
+
+	return orders, nil
+}
+
+func GetAllOrderItems() ([]OrderItem, error) {
+	query := `
+	SELECT id, order_id, product_id, quantity, created_at, deleted_at
+	FROM order_item
+	WHERE deleted_at IS NULL
+	`
+	rows, err := db.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var orderItems []OrderItem
+	for rows.Next() {
+		var orderItem OrderItem
+		err = rows.Scan(&orderItem.ID, &orderItem.OrderID, &orderItem.ProductID, &orderItem.Quantity, &orderItem.CreatedAt, &orderItem.DeletedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		orderItems = append(orderItems, orderItem)
+	}
+
+	return orderItems, nil
+}
+
 func CreateOrderFromCart(cart Cart) (Order, []OrderItem, error) {
 	cartItems, err := GetCartItemsByCart(cart.ID)
 	if err != nil {

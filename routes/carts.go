@@ -8,6 +8,16 @@ import (
 	"github.com/synapsis-challenge/models"
 )
 
+func getCarts(c *gin.Context) {
+	carts, err := models.GetAllCarts()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch data"})
+		return
+	}
+
+	c.JSON(http.StatusOK, carts)
+}
+
 func createCartItem(c *gin.Context) {
 	var cartItem models.CartItem
 	err := c.ShouldBindJSON(&cartItem)
