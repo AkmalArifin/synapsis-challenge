@@ -3,6 +3,6 @@ Content-Type: application/json
 
 {
     "cart_id": 1,
-    "product_id": 3,
-    "quantity": 2
+    "product_id": 5,
+    "quantity": 1
 }
