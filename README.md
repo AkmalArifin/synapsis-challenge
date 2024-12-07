@@ -259,7 +259,7 @@ Retrieve a list of all order items.
   ]
   ```
 ### 10. POST /orders
-Create an orders by cart id
+Create an orders by cart id. After create an order, all the cart items that inside cart id will be automatically deleted.
 
 - **URL**: `/orders`
 - **Method**: `POST`
